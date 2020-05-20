@@ -44,7 +44,7 @@ void start_threads(int n)
 
   num_threads = NUM_OF_THREADS;
   workers = malloc(sizeof(pthread_t) * num_threads);
-  jds = malloc(num_threads* sizeof(struct job_desc));
+  jds = malloc(num_threads * sizeof(struct job_desc));
 
   printf("\n   Creating %d threads ... \n\n", num_threads);
 
