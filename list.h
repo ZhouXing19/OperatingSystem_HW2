@@ -31,8 +31,8 @@ void List_Init(list_t *list){
 }
 
 void List_Insert(list_t *list, void *element, uint key){
-  struct node_t *node = create_node(key, element);
   spinlock_acquire(list->lock);
+  struct node_t *node = create_node(key, element);
   if(list->head == NULL){
     list->head = node;
     list->head->next = NULL;
@@ -46,9 +46,9 @@ void List_Insert(list_t *list, void *element, uint key){
 }
 
 void List_Delete(list_t *list, unsigned int key){
+  spinlock_acquire(list->lock);
   struct node_t *cur;
   cur = list->head;
-  spinlock_acquire(list->lock);
   while(cur != NULL){
     if(cur->key == key){
       if(cur == list->head){
@@ -66,9 +66,9 @@ void List_Delete(list_t *list, unsigned int key){
 }
 
 void *List_Lookup(list_t *list, unsigned int key){
+  spinlock_acquire(list->lock);
   struct node_t *cur;
   cur = list->head;
-  spinlock_acquire(list->lock);
   while(cur != NULL){
     if(cur->key == key){
       spinlock_release(list->lock);
