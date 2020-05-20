@@ -8,7 +8,6 @@ typedef struct node_t{
   uint key;
   void* element;
   struct node_t *next;
-  struct node_t *prev;
 }node_t;
 
 typedef struct list_t{
@@ -21,7 +20,6 @@ node_t* create_node(uint key, void* element){
   node->key = key;
   node->element = element;
   node->next = NULL;
-  node->prev = NULL;
   return node;
 }
 
@@ -31,50 +29,58 @@ void List_Init(list_t *list){
 }
 
 void List_Insert(list_t *list, void *element, uint key){
-  struct node_t *node = create_node(key, element);
   spinlock_acquire(list->lock);
+  struct node_t *node = create_node(key, element);
   if(list->head == NULL){
     list->head = node;
     list->head->next = NULL;
   }
   else{
     node->next = list->head;
-    list->head->prev = node;
     list->head = node;
   }
   spinlock_release(list->lock);
 }
 
 void List_Delete(list_t *list, unsigned int key){
+  spinlock_acquire(list->lock);
   struct node_t *cur;
   cur = list->head;
-  spinlock_acquire(list->lock);
-  while(cur != NULL){
-    if(cur->key == key){
-      if(cur == list->head){
-        list->head = cur->next;
-      }
-      else{
-        cur->prev->next = cur->next;
-      }
+  if(cur == NULL) {
+    spinlock_release(list->lock);
+    return;
+  }
+  if(cur!= NULL && cur->key == key){
+    list->head = cur->next;
+    spinlock_release(list->lock);
+    return;
+  }
+  while(cur->next!= NULL){
+    if(cur->next->key == key){
+      cur->next = cur->next->next;
       spinlock_release(list->lock);
       return;
     }
-    cur = cur->next;
+    else{
+      cur = cur->next;
+    }
   }
   spinlock_release(list->lock);
+  return;
 }
 
 void *List_Lookup(list_t *list, unsigned int key){
+  spinlock_acquire(list->lock);
   struct node_t *cur;
   cur = list->head;
-  spinlock_acquire(list->lock);
   while(cur != NULL){
     if(cur->key == key){
       spinlock_release(list->lock);
       return cur->element;
     }
-    cur = cur->next;
+    else{
+      cur = cur->next;
+    }
   }
   spinlock_release(list->lock);
   return NULL;

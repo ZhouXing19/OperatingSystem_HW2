@@ -101,7 +101,6 @@ void* thread_code(void *arg)
 
   //    printf("  START Thread-%04d will execute %6d ops \n", jd->tid,
   //       numOfOps);
-
   while (i < numOfOps) {
     addlist[i] = i + (jd->tid * NUM_OPS_PER_THREAD);
     List_Insert(&l, addlist + i, addlist[i]);

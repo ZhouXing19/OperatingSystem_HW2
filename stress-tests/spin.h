@@ -22,7 +22,7 @@ void  spinlock_acquire(spinlock_t *lock){
 }
 
 void spinlock_release(spinlock_t *lock){
-  lock->flag = 0;
+  xchg(&lock->flag, 0);
 }
 
 #endif 
