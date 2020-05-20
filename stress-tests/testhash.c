@@ -1,10 +1,4 @@
-/******************************** /
-\ testhash3.c                     \
-/                                 /
-\ Multi-threaded test with 20-40  \
-/ hash buckets, 2000-4000 ops per /
-\ thread, repeated 100 times.     \
-/*********************************/
+
 
 #include "testhash.h"
 #include "hash.h"
@@ -30,7 +24,7 @@ int main()
     Hash_Init(&h, rand() % ADDITIONAL_NUM_OF_BUCKETS + MIN_NUM_OF_BUCKETS);
     start_threads(i);
   }
-  // If the program got here without failing and quitting, 
+  // If the program got here without failing and quitting,
   // then the test passed.
   printf("\n\n  ----------------------------");
   printf("\n  Test succeeded! Congrats! \n");
@@ -149,4 +143,3 @@ void myerror(char *arg)
   printf("Test failed.\n");
   exit(-1);
 }
-
